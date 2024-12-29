@@ -1,0 +1,37 @@
+services:
+  nginx:
+    image: nginx:1.27
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/nginx.conf
+
+  app:
+    build:
+      context: ./docker/php
+    depends_on:
+      - mysql
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/php/php.ini:/etc/php/php.ini
+
+  mysql:
+    image: mysql:8.0.40
+    user: "mysql"
+    command: --max_allowed_packet=32505856
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      - MYSQL_DATABASE=${DB_NAME:-laravel_local}
+      - MYSQL_USER=${DB_USER:-phper}
+      - MYSQL_PASSWORD=${DB_PASS:-secret}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS:-secret}
+    ports:
+      - ${DB_PORT:-3306}:3306
+
+volumes:
+  mysql_data:
