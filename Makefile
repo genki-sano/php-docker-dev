@@ -23,9 +23,9 @@ web:
 app:
 	docker compose exec app bash
 db:
-	docker compose exec db bash
+	docker compose exec mysql bash
 sql:
-	docker compose exec db bash -c 'mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE'
+	docker compose exec mysql bash -c 'mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE'
 opcache-reset:
 	docker compose exec app php -r 'opcache_reset(); echo "Opcache cleared\n";'
 opcode:
