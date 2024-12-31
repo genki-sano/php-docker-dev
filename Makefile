@@ -1,5 +1,7 @@
 init:
-	makedir -p ./src
+	mkdir -p ./src
+	touch ./src/index.php
+	echo "<?php phpinfo();" > ./src/index.php
 	cp .env.example .env
 	@make build
 	@make up
@@ -24,3 +26,7 @@ db:
 	docker compose exec db bash
 sql:
 	docker compose exec db bash -c 'mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE'
+opcache-reset:
+	docker compose exec app php -r 'opcache_reset(); echo "Opcache cleared\n";'
+opcode:
+	docker compose exec app php -d opcache.enable_cli=1 -d opcache.opt_debug_level=0x20000 index.php
